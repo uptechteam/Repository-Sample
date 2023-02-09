@@ -14,15 +14,21 @@ import com.uptech.repositorysample.App
 import com.uptech.repositorysample.R
 import com.uptech.repositorysample.databinding.FragmentListBinding
 import com.uptech.repositorysample.main.details.DetailsFragment.Companion.ITEM_ID
-import com.uptech.repositorysample.main.di.MainComponentHolder
+import com.uptech.repositorysample.main.dialog.ErrorDialog.Companion.SOURCE
+import com.uptech.repositorysample.main.list.ErrorDialogHost.Companion.BALANCE
+import com.uptech.repositorysample.main.list.ErrorDialogHost.Companion.ITEMS
+import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent
+import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.BalanceFetchingError
+import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.ItemFetchingError
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class ListFragment : Fragment() {
+class ListFragment : Fragment(), ErrorDialogHost {
 
   @Inject lateinit var factory: ListViewModel.Factory
+  private lateinit var component: ListComponent
   private val viewModel: ListViewModel by viewModels { factory }
   private var _binding: FragmentListBinding? = null
   private val binding: FragmentListBinding
@@ -39,6 +45,7 @@ class ListFragment : Fragment() {
         .repositoryComponent(app.repositoryComponent)
         .authenticatedComponent(app.applicationComponent.authenticatedComponentHolder.authenticatedComponent!!)
         .build()
+        .also { component = it }
         .inject(this)
     }
     super.onAttach(context)
@@ -54,8 +61,39 @@ class ListFragment : Fragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    component.events.onEach(::handleEvent).launchIn(lifecycleScope)
     viewModel.balance.onEach { binding.balance.text = "balance $it" }.launchIn(lifecycleScope)
     viewModel.items.onEach { items -> itemsAdapter.items = items }.launchIn(lifecycleScope)
     binding.itemsList.adapter = itemsAdapter
+  }
+
+  private fun handleEvent(event: NavigationEvent) {
+    when (event) {
+      BalanceFetchingError -> showErrorDialog(BALANCE)
+      ItemFetchingError -> showErrorDialog(ITEMS)
+    }
+  }
+
+  private fun showErrorDialog(source: String) {
+    findNavController().navigate(
+      R.id.errorDialog,
+      bundleOf(SOURCE to source)
+    )
+  }
+
+  override fun onRetry(args: Bundle?) {
+    when(args?.getString(SOURCE)) {
+      BALANCE -> viewModel.observeBalance()
+      ITEMS -> viewModel.observeItems()
+    }
+  }
+}
+
+interface ErrorDialogHost {
+  fun onRetry(args: Bundle?)
+
+  companion object {
+    const val BALANCE = "balance"
+    const val ITEMS = "items"
   }
 }

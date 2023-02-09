@@ -7,10 +7,12 @@ import com.uptech.repositorysample.entity.Item
 import com.uptech.repositorysample.main.details.DetailsViewModel.Event.Close
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
@@ -28,7 +30,11 @@ class DetailsViewModel(
 
   init {
     authenticatedScope.launch {
-      _item.value = itemRepository.getItem(itemId)
+      itemRepository.observeItems().map {
+        it.first { it.id == itemId }
+      }.onEach {
+        _item.value = it//itemRepository.getItem(itemId)
+      }.launchIn(this)
     }
   }
 

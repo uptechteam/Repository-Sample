@@ -22,6 +22,6 @@ class ItemApi(private val userManager: UserManager) {
     }
 
   fun buy(item: Item) {
-    mockedData[mockedData.indexOf(item)] = item.copy(countOnStock = item.countOnStock - 1)
+    mockedData[mockedData.indexOfFirst { it.id == item.id }] = item.copy(countOnStock = item.countOnStock - 1)
   }
 }

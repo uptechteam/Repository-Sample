@@ -7,10 +7,15 @@
   <fragment
       android:id="@+id/listFragment"
       android:name="com.uptech.repositorysample.main.list.ListFragment"
-      android:label="ListFragment" />
+      android:label="ListFragment"/>
 
   <fragment
       android:id="@+id/detailsFragment"
       android:name="com.uptech.repositorysample.main.details.DetailsFragment"
       android:label="DetailsFragment" />
+
+  <dialog
+      android:id="@+id/errorDialog"
+      android:name="com.uptech.repositorysample.main.dialog.ErrorDialog"
+    />
 </navigation>

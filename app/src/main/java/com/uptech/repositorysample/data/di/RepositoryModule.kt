@@ -8,6 +8,9 @@ import com.uptech.repositorysample.data.items.ItemCache
 import com.uptech.repositorysample.data.items.ItemRepository
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 @Module
 class RepositoryModule {
@@ -25,7 +28,8 @@ class RepositoryModule {
         itemApi = itemApi,
         itemCache = itemCache,
         balanceApi = balanceApi,
-        balanceCache = balanceCache
+        balanceCache = balanceCache,
+        CoroutineScope(SupervisorJob() + Dispatchers.IO)
       )
 
     @RepoScope
