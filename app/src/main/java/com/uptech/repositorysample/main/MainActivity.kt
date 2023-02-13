@@ -8,10 +8,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import com.uptech.repositorysample.App
 import com.uptech.repositorysample.R
-import com.uptech.repositorysample.databinding.ActivityLoginBinding
 import com.uptech.repositorysample.databinding.ActivityMainBinding
 import com.uptech.repositorysample.login.LoginActivity
 import com.uptech.repositorysample.main.MainViewModel.Event
@@ -22,8 +20,6 @@ import com.uptech.repositorysample.main.di.MainComponent
 import com.uptech.repositorysample.main.di.MainComponentHolder
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(),
@@ -42,15 +38,14 @@ class MainActivity : AppCompatActivity(),
     (application as App).let { app ->
       DaggerMainComponent.builder()
         .dataSourceComponent(app.dataSourceComponent)
-        .repositoryComponent(app.repositoryComponent)
         .applicationComponent(app.applicationComponent)
-      .build()
-      .also { component ->
-        _mainComponent = component
-        component.events
-          .onEach(::handleEvent)
-          .launchIn(lifecycleScope)
-      }.inject(this)
+        .build()
+        .also { component ->
+          _mainComponent = component
+          component.events
+            .onEach(::handleEvent)
+            .launchIn(lifecycleScope)
+        }.inject(this)
     }
     viewModel
     super.onCreate(savedInstanceState)

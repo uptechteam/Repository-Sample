@@ -42,7 +42,6 @@ class ListFragment : Fragment(), ErrorDialogHost {
   override fun onAttach(context: Context) {
     (requireActivity().application as App).let { app ->
       DaggerListComponent.builder()
-        .repositoryComponent(app.repositoryComponent)
         .authenticatedComponent(app.applicationComponent.authenticatedComponentHolder.authenticatedComponent!!)
         .build()
         .also { component = it }

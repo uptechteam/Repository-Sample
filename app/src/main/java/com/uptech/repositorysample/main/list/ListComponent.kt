@@ -2,7 +2,6 @@ package com.uptech.repositorysample.main.list
 
 import com.uptech.repositorysample.FragmentScope
 import com.uptech.repositorysample.data.balance.BalanceRepository
-import com.uptech.repositorysample.data.di.RepositoryComponent
 import com.uptech.repositorysample.data.items.ItemRepository
 import com.uptech.repositorysample.main.di.authenticated.AuthenticatedComponent
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 @FragmentScope
 @Component(
   dependencies = [
-    RepositoryComponent::class,
     AuthenticatedComponent::class
   ],
   modules = [ListModule::class]
@@ -29,7 +27,6 @@ interface ListComponent {
 
   @Component.Builder
   interface Builder {
-    fun repositoryComponent(component: RepositoryComponent): Builder
     fun authenticatedComponent(component: AuthenticatedComponent): Builder
     fun build(): ListComponent
   }

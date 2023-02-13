@@ -10,16 +10,13 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
   private val itemId: String,
   private val itemRepository: ItemRepository,
-  private val authenticatedScope: CoroutineScope
+  authenticatedScope: CoroutineScope
 ) : ViewModel() {
 
   private val _item: MutableStateFlow<Item?> = MutableStateFlow(null)
@@ -30,11 +27,7 @@ class DetailsViewModel(
 
   init {
     authenticatedScope.launch {
-      itemRepository.observeItems().map {
-        it.first { it.id == itemId }
-      }.onEach {
-        _item.value = it//itemRepository.getItem(itemId)
-      }.launchIn(this)
+      _item.value = itemRepository.getItem(itemId)
     }
   }
 

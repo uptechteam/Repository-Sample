@@ -1,7 +1,6 @@
 package com.uptech.repositorysample.main.di
 
 import com.uptech.repositorysample.ActivityScope
-import com.uptech.repositorysample.LogoutInteractor
 import com.uptech.repositorysample.data.UserManager
 import com.uptech.repositorysample.main.MainViewModel
 import com.uptech.repositorysample.main.MainViewModel.Event
@@ -26,13 +25,11 @@ object MainModule {
   fun viewModelFactory(
     userManager: UserManager,
     events: Channel<Event>,
-    logoutInteractor: LogoutInteractor,
     authenticatedComponentHolder: AuthenticatedComponentHolder
   ): MainViewModel.Factory =
     MainViewModel.Factory(
       userManager = userManager,
       events = events,
-      logoutInteractor = logoutInteractor,
       authenticatedComponentHolder = authenticatedComponentHolder
     )
 }

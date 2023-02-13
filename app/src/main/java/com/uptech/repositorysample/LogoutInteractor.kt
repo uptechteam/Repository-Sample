@@ -4,7 +4,7 @@ import com.uptech.repositorysample.data.UserManager
 import com.uptech.repositorysample.data.balance.BalanceRepository
 import com.uptech.repositorysample.data.items.ItemRepository
 import com.uptech.repositorysample.main.di.authenticated.AuthenticatedComponentHolder
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.cancelAndJoin
 
 class LogoutInteractor(
   private val userManager: UserManager,
@@ -14,7 +14,7 @@ class LogoutInteractor(
 ) {
 
   suspend operator fun invoke() {
-    authenticatedComponentHolder.authenticatedComponent?.authenticatedJob?.cancelChildren()
+    authenticatedComponentHolder.authenticatedComponent?.authenticatedJob?.cancelAndJoin()
     itemRepository.invalidateCache()
     balanceRepository.invalidateCache()
     userManager.logout()

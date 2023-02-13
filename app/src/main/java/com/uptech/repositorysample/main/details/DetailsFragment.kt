@@ -14,7 +14,6 @@ import com.uptech.repositorysample.databinding.FragmentDetailsBinding
 import com.uptech.repositorysample.main.details.DetailsViewModel.Event
 import com.uptech.repositorysample.main.details.DetailsViewModel.Event.Close
 import com.uptech.repositorysample.main.details.DetailsViewModel.Factory
-import com.uptech.repositorysample.main.di.MainComponentHolder
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -30,7 +29,6 @@ class DetailsFragment : Fragment() {
     (requireActivity().application as App).let { app ->
       DaggerDetailsComponent.builder()
         .itemId(arguments?.getString(ITEM_ID)!!)
-        .repositoryComponent(app.repositoryComponent)
         .authenticatedComponent(
           app.applicationComponent.authenticatedComponentHolder.authenticatedComponent!!
         ).build()
