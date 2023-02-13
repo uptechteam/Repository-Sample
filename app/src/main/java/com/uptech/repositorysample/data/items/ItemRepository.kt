@@ -31,7 +31,8 @@ class ItemRepository(
     itemCache.observeItems()
       .onEach { cache ->
         if (cache is Expired) {
-          itemCache.writeItems(itemApi.getItems())
+          itemCache.writeItems(itemApi.getItems())//will cause as many
+        // API call as view models currently observing this data
         }
       }.filterIsInstance<Data<List<Item>>>()
       .map { itemCache -> itemCache.value }

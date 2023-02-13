@@ -9,7 +9,6 @@ import com.uptech.repositorysample.data.items.ItemCache
 import com.uptech.repositorysample.dataStore
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class DataSourceModule {

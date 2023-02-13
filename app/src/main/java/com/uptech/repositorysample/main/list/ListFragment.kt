@@ -10,13 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.uptech.repositorysample.App
 import com.uptech.repositorysample.R
 import com.uptech.repositorysample.databinding.FragmentListBinding
 import com.uptech.repositorysample.main.details.DetailsFragment.Companion.ITEM_ID
-import com.uptech.repositorysample.main.dialog.ErrorDialog.Companion.SOURCE
-import com.uptech.repositorysample.main.list.ErrorDialogHost.Companion.BALANCE
-import com.uptech.repositorysample.main.list.ErrorDialogHost.Companion.ITEMS
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.BalanceFetchingError
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.ItemFetchingError
@@ -25,7 +23,7 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import kotlin.LazyThreadSafetyMode.NONE
 
-class ListFragment : Fragment(), ErrorDialogHost {
+class ListFragment : Fragment() {
 
   @Inject lateinit var factory: ListViewModel.Factory
   private lateinit var component: ListComponent
@@ -74,22 +72,19 @@ class ListFragment : Fragment(), ErrorDialogHost {
   }
 
   private fun showErrorDialog(source: String) {
-    findNavController().navigate(
-      R.id.errorDialog,
-      bundleOf(SOURCE to source)
-    )
+    Snackbar.make(binding.root, "SOMETHING WENT WRONG", Snackbar.LENGTH_LONG)
+      .setAction("RETRY") {
+        when (source) {
+          BALANCE -> viewModel.observeBalance()
+          ITEMS -> viewModel.observeItems()
+        }
+      }.show()
   }
 
-  override fun onRetry(args: Bundle?) {
-    when(args?.getString(SOURCE)) {
-      BALANCE -> viewModel.observeBalance()
-      ITEMS -> viewModel.observeItems()
-    }
+  override fun onDestroyView() {
+    _binding = null
+    super.onDestroyView()
   }
-}
-
-interface ErrorDialogHost {
-  fun onRetry(args: Bundle?)
 
   companion object {
     const val BALANCE = "balance"

@@ -1,9 +1,9 @@
 package com.uptech.repositorysample.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.uptech.repositorysample.App
 import com.uptech.repositorysample.databinding.ActivityLoginBinding

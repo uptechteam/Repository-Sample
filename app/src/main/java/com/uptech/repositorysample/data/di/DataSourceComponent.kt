@@ -8,7 +8,6 @@ import com.uptech.repositorysample.data.items.ItemApi
 import com.uptech.repositorysample.data.items.ItemCache
 import dagger.BindsInstance
 import dagger.Component
-import javax.inject.Singleton
 
 @DataScope
 @Component(
