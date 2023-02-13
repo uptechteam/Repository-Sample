@@ -66,12 +66,12 @@ class ListFragment : Fragment() {
 
   private fun handleEvent(event: NavigationEvent) {
     when (event) {
-      BalanceFetchingError -> showErrorDialog(BALANCE)
-      ItemFetchingError -> showErrorDialog(ITEMS)
+      BalanceFetchingError -> showSnackbar(BALANCE)
+      ItemFetchingError -> showSnackbar(ITEMS)
     }
   }
 
-  private fun showErrorDialog(source: String) {
+  private fun showSnackbar(source: String) {
     Snackbar.make(binding.root, "SOMETHING WENT WRONG", Snackbar.LENGTH_LONG)
       .setAction("RETRY") {
         when (source) {
