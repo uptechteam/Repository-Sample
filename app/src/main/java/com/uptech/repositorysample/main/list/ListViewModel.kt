@@ -2,8 +2,8 @@ package com.uptech.repositorysample.main.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.uptech.repositorysample.data.balance.BalanceRepository
-import com.uptech.repositorysample.data.items.ItemRepository
+import com.uptech.repositorysample.data.balance.BalanceContext
+import com.uptech.repositorysample.data.items.ItemContext
 import com.uptech.repositorysample.entity.Item
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.BalanceFetchingError
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.ItemFetchingError
@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.update
 
 class ListViewModel(
   private val authenticatedScope: CoroutineScope,
-  private val balanceRepository: BalanceRepository,
-  private val itemRepository: ItemRepository,
+  private val balanceContext: BalanceContext,
+  private val itemContext: ItemContext,
   private val events: Channel<NavigationEvent>
 ) : ViewModel() {
   private var balanceJob: Job? = null
@@ -37,7 +37,7 @@ class ListViewModel(
 
   fun observeBalance() {
     try {
-      balanceJob = balanceRepository.observeBalance()
+      balanceJob = balanceContext.observeBalance()
         .onEach { amount -> balance.update { amount } }
         .launchIn(authenticatedScope)
     } catch (e: Exception) {
@@ -47,7 +47,7 @@ class ListViewModel(
 
   fun observeItems() {
     try {
-      itemRepository.observeItems()
+      itemContext.observeItems()
         .onEach { items -> this.items.update { items } }
         .launchIn(authenticatedScope)
     } catch(e: Exception) {
@@ -57,16 +57,16 @@ class ListViewModel(
 
   class Factory(
     private val authenticatedScope: CoroutineScope,
-    private val balanceRepository: BalanceRepository,
-    private val itemRepository: ItemRepository,
+    private val balanceContext: BalanceContext,
+    private val itemContext: ItemContext,
     private val events: Channel<NavigationEvent>
   ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
       ListViewModel(
         authenticatedScope = authenticatedScope,
-        balanceRepository = balanceRepository,
-        itemRepository = itemRepository,
+        balanceContext = balanceContext,
+        itemContext = itemContext,
         events = events
       ) as T
   }

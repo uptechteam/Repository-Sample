@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity(),
     (application as App).let { app ->
       DaggerMainComponent.builder()
         .dataSourceComponent(app.dataSourceComponent)
+        .repositoryComponent(app.repositoryComponent)
         .applicationComponent(app.applicationComponent)
         .build()
         .also { component ->

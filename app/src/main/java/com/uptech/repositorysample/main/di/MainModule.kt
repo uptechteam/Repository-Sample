@@ -1,7 +1,10 @@
 package com.uptech.repositorysample.main.di
 
 import com.uptech.repositorysample.ActivityScope
+import com.uptech.repositorysample.LogoutInteractor
 import com.uptech.repositorysample.data.UserManager
+import com.uptech.repositorysample.data.balance.BalanceRepository
+import com.uptech.repositorysample.data.items.ItemRepository
 import com.uptech.repositorysample.main.MainViewModel
 import com.uptech.repositorysample.main.MainViewModel.Event
 import com.uptech.repositorysample.main.di.authenticated.AuthenticatedComponentHolder
@@ -25,11 +28,27 @@ object MainModule {
   fun viewModelFactory(
     userManager: UserManager,
     events: Channel<Event>,
+    logoutInteractor: LogoutInteractor,
     authenticatedComponentHolder: AuthenticatedComponentHolder
   ): MainViewModel.Factory =
     MainViewModel.Factory(
       userManager = userManager,
       events = events,
+      logoutInteractor = logoutInteractor,
       authenticatedComponentHolder = authenticatedComponentHolder
     )
+
+  @ActivityScope
+  @Provides
+  fun provideLogoutInteractor(
+    userManager: UserManager,
+    itemRepository: ItemRepository,
+    balanceRepository: BalanceRepository,
+    authenticatedComponentHolder: AuthenticatedComponentHolder
+  ): LogoutInteractor = LogoutInteractor(
+    userManager = userManager,
+    itemRepository = itemRepository,
+    balanceRepository = balanceRepository,
+    authenticatedComponentHolder = authenticatedComponentHolder
+  )
 }

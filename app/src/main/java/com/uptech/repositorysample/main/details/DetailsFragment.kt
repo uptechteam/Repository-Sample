@@ -29,6 +29,7 @@ class DetailsFragment : Fragment() {
     (requireActivity().application as App).let { app ->
       DaggerDetailsComponent.builder()
         .itemId(arguments?.getString(ITEM_ID)!!)
+        .repositoryComponent(app.repositoryComponent)
         .authenticatedComponent(
           app.applicationComponent.authenticatedComponentHolder.authenticatedComponent!!
         ).build()

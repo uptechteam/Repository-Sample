@@ -3,6 +3,7 @@ package com.uptech.repositorysample.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.uptech.repositorysample.LogoutInteractor
 import com.uptech.repositorysample.data.UserManager
 import com.uptech.repositorysample.main.MainViewModel.Event.Login
 import com.uptech.repositorysample.main.MainViewModel.Event.ShowList
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
   private val userManager: UserManager,
   private val events: Channel<Event>,
+  private val doLogout: LogoutInteractor,
   private val authenticatedComponentHolder: AuthenticatedComponentHolder,
 ) : ViewModel() {
 
@@ -35,7 +37,7 @@ class MainViewModel(
 
   fun logout() {
     viewModelScope.launch(Dispatchers.IO) {
-      authenticatedComponentHolder.authenticatedComponent?.logoutInteractor?.invoke()
+      doLogout()
     }
   }
 
@@ -47,6 +49,7 @@ class MainViewModel(
   class Factory(
     private val userManager: UserManager,
     private val events: Channel<Event>,
+    private val logoutInteractor: LogoutInteractor,
     private val authenticatedComponentHolder: AuthenticatedComponentHolder
   ) : ViewModelProvider.Factory {
 
@@ -55,6 +58,7 @@ class MainViewModel(
       MainViewModel(
         userManager = userManager,
         events = events,
+        doLogout = logoutInteractor,
         authenticatedComponentHolder = authenticatedComponentHolder
       ) as T
   }

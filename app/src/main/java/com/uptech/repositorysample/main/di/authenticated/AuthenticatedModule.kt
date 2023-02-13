@@ -1,13 +1,9 @@
 package com.uptech.repositorysample.main.di.authenticated
 
 import com.uptech.repositorysample.AuthenticatedScope
-import com.uptech.repositorysample.LogoutInteractor
-import com.uptech.repositorysample.data.UserManager
-import com.uptech.repositorysample.data.balance.BalanceApi
-import com.uptech.repositorysample.data.balance.BalanceCache
+import com.uptech.repositorysample.data.balance.BalanceContext
 import com.uptech.repositorysample.data.balance.BalanceRepository
-import com.uptech.repositorysample.data.items.ItemApi
-import com.uptech.repositorysample.data.items.ItemCache
+import com.uptech.repositorysample.data.items.ItemContext
 import com.uptech.repositorysample.data.items.ItemRepository
 import dagger.Module
 import dagger.Provides
@@ -32,39 +28,21 @@ object AuthenticatedModule {
 
   @AuthenticatedScope
   @Provides
-  fun provideItemRepository(
-    itemApi: ItemApi,
-    itemCache: ItemCache,
-    balanceApi: BalanceApi,
-    balanceCache: BalanceCache,
+  fun provideItemContext(
+    itemRepository: ItemRepository,
     authenticatedScope: CoroutineScope
-  ): ItemRepository = ItemRepository(
-    itemApi, itemCache, balanceApi, balanceCache, authenticatedScope
-  )
-
-  @AuthenticatedScope
-  @Provides
-  fun provideBalanceRepository(
-    api: BalanceApi,
-    balanceCache: BalanceCache,
-    authenticatedScope: CoroutineScope
-  ): BalanceRepository = BalanceRepository(
-    api = api,
-    balanceCache = balanceCache,
+  ): ItemContext = ItemContext(
+    itemRepository = itemRepository,
     authenticatedScope = authenticatedScope
   )
 
   @AuthenticatedScope
   @Provides
-  fun provideLogoutInteractor(
-    userManager: UserManager,
-    itemRepository: ItemRepository,
+  fun provideBalanceContext(
     balanceRepository: BalanceRepository,
-    authenticatedComponentHolder: AuthenticatedComponentHolder
-  ): LogoutInteractor = LogoutInteractor(
-    userManager,
-    itemRepository,
-    balanceRepository,
-    authenticatedComponentHolder
+    authenticatedScope: CoroutineScope
+  ): BalanceContext = BalanceContext(
+    balanceRepository = balanceRepository,
+    authenticatedScope = authenticatedScope
   )
 }

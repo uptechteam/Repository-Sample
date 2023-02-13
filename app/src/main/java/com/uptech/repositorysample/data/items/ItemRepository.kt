@@ -5,31 +5,17 @@ import com.uptech.repositorysample.data.Cache.Expired
 import com.uptech.repositorysample.data.balance.BalanceApi
 import com.uptech.repositorysample.data.balance.BalanceCache
 import com.uptech.repositorysample.entity.Item
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 
 class ItemRepository(
   private val itemApi: ItemApi,
   private val itemCache: ItemCache,
   private val balanceApi: BalanceApi,
-  private val balanceCache: BalanceCache,
-  val authenticatedScope: CoroutineScope
+  private val balanceCache: BalanceCache
 ) {
-
-  private val item = itemCache.observeItems()
-    .onEach { cache ->
-      if (cache is Expired) {
-        itemCache.writeItems(itemApi.getItems())
-      }
-    }.filterIsInstance<Data<List<Item>>>()
-    .map { itemCache -> itemCache.value }
-    .stateIn(authenticatedScope, SharingStarted.WhileSubscribed(2000), emptyList())
-
   fun buy(item: Item) {
     mockedBuyLogic(item)
     itemCache.invalidate()
@@ -41,7 +27,14 @@ class ItemRepository(
     itemApi.buy(item)
   }
 
-  fun observeItems(): Flow<List<Item>> = item
+  fun observeItems(): Flow<List<Item>> =
+    itemCache.observeItems()
+      .onEach { cache ->
+        if (cache is Expired) {
+          itemCache.writeItems(itemApi.getItems())
+        }
+      }.filterIsInstance<Data<List<Item>>>()
+      .map { itemCache -> itemCache.value }
 
   suspend fun getItem(itemId: String): Item =
     (itemCache.getItem(itemId) as? Data)?.value ?: itemCache.writeItems(itemApi.getItems())

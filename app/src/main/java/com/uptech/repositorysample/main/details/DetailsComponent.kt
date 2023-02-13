@@ -1,6 +1,7 @@
 package com.uptech.repositorysample.main.details
 
 import com.uptech.repositorysample.FragmentScope
+import com.uptech.repositorysample.data.RepositoryComponent
 import com.uptech.repositorysample.data.items.ItemRepository
 import com.uptech.repositorysample.main.details.DetailsComponent.Companion.ITEM_ID
 import com.uptech.repositorysample.main.di.authenticated.AuthenticatedComponent
@@ -14,6 +15,7 @@ import javax.inject.Named
 @FragmentScope
 @Component(
   dependencies = [
+    RepositoryComponent::class,
     AuthenticatedComponent::class
   ],
   modules = [
@@ -26,6 +28,7 @@ interface DetailsComponent {
   @Component.Builder
   interface Builder {
     fun itemId(@BindsInstance @Named(ITEM_ID) itemId: String): Builder
+    fun repositoryComponent(component: RepositoryComponent): Builder
     fun authenticatedComponent(component: AuthenticatedComponent): Builder
     fun build(): DetailsComponent
   }
