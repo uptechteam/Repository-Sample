@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 
-class BalanceContext(
+class BalanceDataBridge(
   balanceRepository: BalanceRepository,
   authenticatedScope: CoroutineScope
 ) {

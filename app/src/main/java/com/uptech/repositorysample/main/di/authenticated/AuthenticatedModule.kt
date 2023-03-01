@@ -1,9 +1,9 @@
 package com.uptech.repositorysample.main.di.authenticated
 
 import com.uptech.repositorysample.AuthenticatedScope
-import com.uptech.repositorysample.data.balance.BalanceContext
+import com.uptech.repositorysample.data.balance.BalanceDataBridge
 import com.uptech.repositorysample.data.balance.BalanceRepository
-import com.uptech.repositorysample.data.items.ItemContext
+import com.uptech.repositorysample.data.items.ItemDataBridge
 import com.uptech.repositorysample.data.items.ItemRepository
 import dagger.Module
 import dagger.Provides
@@ -31,7 +31,7 @@ object AuthenticatedModule {
   fun provideItemContext(
     itemRepository: ItemRepository,
     authenticatedScope: CoroutineScope
-  ): ItemContext = ItemContext(
+  ): ItemDataBridge = ItemDataBridge(
     itemRepository = itemRepository,
     authenticatedScope = authenticatedScope
   )
@@ -41,7 +41,7 @@ object AuthenticatedModule {
   fun provideBalanceContext(
     balanceRepository: BalanceRepository,
     authenticatedScope: CoroutineScope
-  ): BalanceContext = BalanceContext(
+  ): BalanceDataBridge = BalanceDataBridge(
     balanceRepository = balanceRepository,
     authenticatedScope = authenticatedScope
   )

@@ -1,8 +1,8 @@
 package com.uptech.repositorysample.main.list
 
 import com.uptech.repositorysample.FragmentScope
-import com.uptech.repositorysample.data.balance.BalanceContext
-import com.uptech.repositorysample.data.items.ItemContext
+import com.uptech.repositorysample.data.balance.BalanceDataBridge
+import com.uptech.repositorysample.data.items.ItemDataBridge
 import com.uptech.repositorysample.main.di.authenticated.AuthenticatedComponent
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent
 import dagger.Component
@@ -46,14 +46,14 @@ object ListModule {
   @Provides
   fun provideFactory(
     authenticatedScope: CoroutineScope,
-    balanceContext: BalanceContext,
-    itemContext: ItemContext,
+    balanceDataBridge: BalanceDataBridge,
+    itemDataBridge: ItemDataBridge,
     events: Channel<NavigationEvent>
   ): ListViewModel.Factory =
     ListViewModel.Factory(
       authenticatedScope = authenticatedScope,
-      balanceContext = balanceContext,
-      itemContext = itemContext,
+      balanceDataBridge = balanceDataBridge,
+      itemDataBridge = itemDataBridge,
       events = events
     )
 }

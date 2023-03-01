@@ -2,9 +2,9 @@ package com.uptech.repositorysample.main.di.authenticated
 
 import com.uptech.repositorysample.AuthenticatedScope
 import com.uptech.repositorysample.data.RepositoryComponent
-import com.uptech.repositorysample.data.balance.BalanceContext
+import com.uptech.repositorysample.data.balance.BalanceDataBridge
 import com.uptech.repositorysample.data.di.DataSourceComponent
-import com.uptech.repositorysample.data.items.ItemContext
+import com.uptech.repositorysample.data.items.ItemDataBridge
 import com.uptech.repositorysample.main.di.core.CoreComponent
 import dagger.BindsInstance
 import dagger.Component
@@ -23,8 +23,8 @@ import kotlinx.coroutines.Job
 interface AuthenticatedComponent {
   val authenticatedJob: Job
   val authenticatedScope: CoroutineScope
-  val itemContext: ItemContext
-  val balanceContext: BalanceContext
+  val itemDataBridge: ItemDataBridge
+  val balanceDataBridge: BalanceDataBridge
 
   @Component.Builder
   interface Builder {

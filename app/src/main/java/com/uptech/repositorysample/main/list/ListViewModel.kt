@@ -2,8 +2,8 @@ package com.uptech.repositorysample.main.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.uptech.repositorysample.data.balance.BalanceContext
-import com.uptech.repositorysample.data.items.ItemContext
+import com.uptech.repositorysample.data.balance.BalanceDataBridge
+import com.uptech.repositorysample.data.items.ItemDataBridge
 import com.uptech.repositorysample.entity.Item
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.BalanceFetchingError
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.ItemFetchingError
@@ -19,8 +19,8 @@ import kotlinx.coroutines.launch
 
 class ListViewModel(
   private val authenticatedScope: CoroutineScope,
-  private val balanceContext: BalanceContext,
-  private val itemContext: ItemContext,
+  private val balanceDataBridge: BalanceDataBridge,
+  private val itemDataBridge: ItemDataBridge,
   private val events: Channel<NavigationEvent>
 ) : ViewModel() {
   private var balanceJob: Job? = null
@@ -41,7 +41,7 @@ class ListViewModel(
     authenticatedScope.launch(
       CoroutineExceptionHandler { _, _ -> events.trySend(BalanceFetchingError) }
     ) {
-      balanceJob = balanceContext.observeBalance()
+      balanceJob = balanceDataBridge.observeBalance()
         .onEach { amount -> balance.update { amount } }
         .launchIn(this)
     }
@@ -51,7 +51,7 @@ class ListViewModel(
     authenticatedScope.launch(
       CoroutineExceptionHandler { _, _ -> events.trySend(ItemFetchingError) }
     ) {
-      itemContext.observeItems()
+      itemDataBridge.observeItems()
         .onEach { items -> this@ListViewModel.items.update { items } }
         .launchIn(this)
     }
@@ -59,16 +59,16 @@ class ListViewModel(
 
   class Factory(
     private val authenticatedScope: CoroutineScope,
-    private val balanceContext: BalanceContext,
-    private val itemContext: ItemContext,
+    private val balanceDataBridge: BalanceDataBridge,
+    private val itemDataBridge: ItemDataBridge,
     private val events: Channel<NavigationEvent>
   ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T =
       ListViewModel(
         authenticatedScope = authenticatedScope,
-        balanceContext = balanceContext,
-        itemContext = itemContext,
+        balanceDataBridge = balanceDataBridge,
+        itemDataBridge = itemDataBridge,
         events = events
       ) as T
   }

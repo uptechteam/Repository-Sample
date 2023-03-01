@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.shareIn
 
-class ItemContext(
+class ItemDataBridge(
   itemRepository: ItemRepository,
   authenticatedScope: CoroutineScope
 ) {
