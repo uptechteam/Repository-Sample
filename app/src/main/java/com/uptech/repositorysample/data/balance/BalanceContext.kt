@@ -18,5 +18,5 @@ class BalanceContext(
         replay = 1
       )
   }
-  fun observeBalance() = balance
+  fun observeBalance(): Flow<Long> = balance
 }

@@ -7,6 +7,7 @@ import com.uptech.repositorysample.data.items.ItemContext
 import com.uptech.repositorysample.entity.Item
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.BalanceFetchingError
 import com.uptech.repositorysample.main.list.ListViewModel.NavigationEvent.ItemFetchingError
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class ListViewModel(
   private val authenticatedScope: CoroutineScope,
@@ -36,22 +38,22 @@ class ListViewModel(
   }
 
   fun observeBalance() {
-    try {
+    authenticatedScope.launch(
+      CoroutineExceptionHandler { _, _ -> events.trySend(BalanceFetchingError) }
+    ) {
       balanceJob = balanceContext.observeBalance()
         .onEach { amount -> balance.update { amount } }
-        .launchIn(authenticatedScope)
-    } catch (e: Exception) {
-      events.trySend(BalanceFetchingError)
+        .launchIn(this)
     }
   }
 
   fun observeItems() {
-    try {
+    authenticatedScope.launch(
+      CoroutineExceptionHandler { _, _ -> events.trySend(ItemFetchingError) }
+    ) {
       itemContext.observeItems()
-        .onEach { items -> this.items.update { items } }
-        .launchIn(authenticatedScope)
-    } catch(e: Exception) {
-      events.trySend(ItemFetchingError)
+        .onEach { items -> this@ListViewModel.items.update { items } }
+        .launchIn(this)
     }
   }
 
