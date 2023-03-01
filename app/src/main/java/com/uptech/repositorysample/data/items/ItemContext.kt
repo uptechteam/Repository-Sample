@@ -4,7 +4,7 @@ import com.uptech.repositorysample.entity.Item
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.shareIn
 
 class ItemContext(
   itemRepository: ItemRepository,
@@ -13,7 +13,11 @@ class ItemContext(
 
   private val items: Flow<List<Item>> by lazy {
     itemRepository.observeItems()
-      .stateIn(authenticatedScope, WhileSubscribed(2000), emptyList())
+      .shareIn(
+        scope = authenticatedScope,
+        started = WhileSubscribed(2000),
+        replay = 1
+      )
   }
 
   fun observeItems(): Flow<List<Item>> = items
